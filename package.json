@@ -1,0 +1,26 @@
+{
+  "name": "ycli",
+  "version": "1.0.0",
+  "description": "Create your own simple and extendable cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daKmoR/ycli.git"
+  },
+  "keywords": [
+    "cli",
+    "bash",
+    "node",
+    "tool",
+    "management"
+  ],
+  "author": "Thomas Allmer <d4kmor@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daKmoR/ycli/issues"
+  },
+  "homepage": "https://github.com/daKmoR/ycli#readme"
+}
