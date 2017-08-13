@@ -1,6 +1,6 @@
 {
   "name": "ycli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Create your own simple and extendable cli",
   "main": "index.js",
   "scripts": {
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/daKmoR/ycli/issues"
   },
-  "homepage": "https://github.com/daKmoR/ycli#readme"
+  "homepage": "https://github.com/daKmoR/ycli#readme",
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
 }
