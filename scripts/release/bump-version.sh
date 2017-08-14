@@ -4,62 +4,137 @@
 # Bash Autocomplete
 #
 if [ "$1" == "ycliCommands" ]; then
-	echo "major minor patch pre"
+	echo "major minor patch pre remove-pre"
 	return;
 fi
 
-remoteStatus=$(_ycliRun git remote-status)
-
-if [[ "$remoteStatus" == "need-to-pull" || "$remoteStatus" == "diverged" ]]; then
-	echo "[ERROR] Your local git is not up to date - use git pull";
-	return 1;
-fi
-
-if [[ "$remoteStatus" == "up-to-date" ]]; then
-	if git diff-index --quiet HEAD --; then
-		if git diff -s --exit-code origin/master; then
-			echo "[ERROR] Nothing changed in comparison to remote - abort";
-			return 1;
-		fi
+optionSkipSecurityCheck=0;
+parameters=($@);
+i=0;
+for parameter in "${parameters[@]}"; do
+	((i++));
+	if [[ "$parameter" == "--skip-security-check" || "$parameter" == "-s" ]]; then
+		optionSkipSecurityCheck=1;
+		unset parameters[$(( i - 1 ))];
 	fi
-fi
+	if [[ "$parameter" == "--help" ]]; then
+		echo "";
+		echo "Bump Version";
+		echo "";
+		echo "This will bump your version in your package.json, bower.json, Readme.md";
+		echo "";
+		echo "Commands:";
+		echo "  major: "
+		echo "    1.3.12 becomes 2.0.0";
+		echo "  minor: ";
+		echo "    1.3.12 becomes 1.4.0";
+		echo "  patch: ";
+		echo "    1.3.12 becomes 1.3.13";
+		echo "  pre: ";
+		echo "    1.3.12 becomes 1.3.12-pre.1";
+		echo "    1.3.12-pre.1 becomes 1.3.12-pre.2";
+		echo "  remove-pre: ";
+		echo "    1.3.12 becomes 1.3.12";
+		echo "    1.3.12-pre.1 becomes 1.3.12";
+		echo "";
+		echo "Options:";
+		echo "  -s --skip-security-check: ";
+		echo "    will not check if there is an actually change to be release";
+		echo "";
+		echo "Examples:";
+		echo "  bump-version";
+		echo "    => bumps patch version [is default]";
+		echo "  bump-version major";
+		echo "    => bumps to new major version";
+		echo "  bump-version remove-pre --skip-security-check";
+		echo "    => removes pre (also if there are no other changes at all)";
+		echo "";
+		return;
+	fi
+	if [[ -z "${parameters[0]}" ]]; then
+		parameters[0]="patch";
+	fi
+done
 
 currentDir=$(pwd);
 
-if [ "$1" == "pre" ]; then
-	currentVersion=$(ycli util json ${currentDir}/package.json get version);
-	currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
+currentVersion="";
+versionFiles=("${currentDir}/package.json" "${currentDir}/bower.json");
+for versionFile in "${versionFiles[@]}"; do
+	if [[ -f ${versionFile} ]]; then
+		currentVersion=$(ycli util json ${versionFile} get version);
+		currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
+		break;
+	fi
+done
+if [[ -z "$currentVersion" ]]; then
+	echo "[ERROR] No current version found - I checked here ${versionFiles[@]}";
+fi
+
+
+#
+# Checking if the release actually has changes
+#
+if [[ ${optionSkipSecurityCheck} == 0 ]]; then
+	remoteStatus=$(_ycliRun git remote-status)
+
+	if [[ "$remoteStatus" == "need-to-pull" || "$remoteStatus" == "diverged" ]]; then
+		echo "[ERROR] Your local git is not up to date - use git pull";
+		return 1;
+	fi
+
+	if [[ "$remoteStatus" == "up-to-date" ]]; then
+		echo "[ERROR] Nothing changed in comparison to remote - abort";
+		return 1;
+	fi
+fi
+
+#
+# pre, remove-pre
+#
+if [ "${parameters[0]}" == "pre" ]; then
 	currentPre=$(echo ${currentVersion} | grep -o pre\.*);
 	currentPreNumber=$(echo ${currentPre} | grep -o [0-9]*);
 	newPreNumber=$((currentPreNumber + 1));
 	newPre="pre.$newPreNumber";
 	newVersion="$currentSemVer-$newPre";
-
-	ycli util json ${currentDir}/bower.json set version ${newVersion}
-	ycli util json ${currentDir}/package.json set version ${newVersion}
 fi
 
-if [[ "$1" == "major" || "$1" == "minor" || "$1" == "patch" ]]; then
-	currentVersion=$(ycli util json ${currentDir}/package.json get version);
-	currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
+if [ "${parameters[0]}" == "remove-pre" ]; then
+	newVersion="$currentSemVer";
+fi
 
+#
+# major, minor, patch
+#
+if [[ "${parameters[0]}" == "major" || "${parameters[0]}" == "minor" || "${parameters[0]}" == "patch" ]]; then
 	major=$(echo ${currentSemVer} | grep -o "^[0-9]*");
 	minor=$(echo ${currentSemVer} | grep -o "\.[0-9]*\." | grep -o "[0-9]");
 	patch=$(echo ${currentSemVer} | grep -o "[0-9]*$");
 fi
 
-if [ "$1" == "major" ]; then
+if [ "${parameters[0]}" == "major" ]; then
 	((major++))
+	minor=0;
+	patch=0;
 fi
-if [ "$1" == "minor" ]; then
+if [ "${parameters[0]}" == "minor" ]; then
 	((minor++))
+	patch=0;
 fi
-if [ "$1" == "patch" ]; then
+if [ "${parameters[0]}" == "patch" ]; then
 	((patch++))
 fi
 
-if [[ "$1" == "major" || "$1" == "minor" || "$1" == "patch" ]]; then
+if [[ "${parameters[0]}" == "major" || "${parameters[0]}" == "minor" || "${parameters[0]}" == "patch" ]]; then
 	newVersion="$major.$minor.$patch";
-	ycli util json ${currentDir}/bower.json set version ${newVersion}
-	ycli util json ${currentDir}/package.json set version ${newVersion}
 fi
+
+#
+# write new version
+#
+for versionFile in "${versionFiles[@]}"; do
+	if [[ -f ${versionFile} ]]; then
+		ycli util json ${versionFile} set version ${newVersion}
+	fi
+done

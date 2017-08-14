@@ -15,11 +15,23 @@ remote=$(git rev-parse "$upstream")
 base=$(git merge-base @ "$upstream")
 
 if [ "$local" == "$remote" ]; then
-	echo "up-to-date"
+	status="up-to-date";
 elif [ "$local" == "$base" ]; then
-	echo "need-to-pull"
+	status="need-to-pull"
 elif [ "$remote" == "$base" ]; then
-	echo "need-to-push"
+	status="need-to-push"
 else
-	echo "diverged"
+	status="diverged"
 fi
+
+
+if [[ "$status" == "up-to-date" ]]; then
+	if ! git diff-index --quiet HEAD --; then
+		status="local-changes";
+		if git diff -s --exit-code origin/master; then
+			status="has-commits";
+		fi
+	fi
+fi
+
+echo "$status";
