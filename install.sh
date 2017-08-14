@@ -7,6 +7,7 @@ if [ ! -f ~/.bashrc ]; then
 	fi
 
 	echo "[INFO] ~/.bashrc missing will be created and liked in ~/.profile";
+	touch ~/.bashrc
 	echo "
 # if running bash
 if [ -n \"$BASH_VERSION\" ]; then
@@ -14,7 +15,7 @@ if [ -n \"$BASH_VERSION\" ]; then
 		if [ -f \"$HOME/.bashrc\" ]; then
 				. \"$HOME/.bashrc\"
 		fi
-fi" > ~/.profile
+fi" >> ~/.profile
 fi
 
 installDir=$(pwd);
