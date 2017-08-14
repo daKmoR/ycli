@@ -36,22 +36,38 @@ if [[ $- == *i* ]]; then
 	cReset=$(tput sgr0)
 fi
 
-function _ycliAddCommandsFromPath {
-	path=$1;
-	if [ ! -d $path ]; then
-		return;
-	fi
 
-	fileExtension="sh";
-	if [ ! -z "$2" ]; then
-		fileExtension="$2";
-	fi
+ycliPluginsPaths=();
+ycliPluginsPaths+=(".");
 
-	for file in $path/*.$fileExtension; do
-		ycliCommand=${file/$path\//}
-		ycliCommand=${ycliCommand/\.$fileExtension/}
-		if [[ ! $ycliCommands == *"$ycliCommand "* ]]; then
-			ycliCommands="$ycliCommands $ycliCommand ";
+ycliPluginsCollectionsDirs=();
+ycliPluginsCollectionsDirs+=($(npm root -g));
+ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
+for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
+	for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
+		if [[ -d ${possiblePluginDir} && $(basename ${possiblePluginDir}) == "ycli-"* ]]; then
+			ycliPluginsPaths+=("$possiblePluginDir");
+		fi
+	done
+done
+
+ycliPluginsPaths+=("$YCLI_DIR");
+
+function _ycliAddCommandsForPath {
+	for pluginPath in ${ycliPluginsPaths[@]}; do
+		scriptDirPath="$pluginPath/scripts/$1";
+		if [ -d ${scriptDirPath} ]; then
+
+			for filePath in ${scriptDirPath}/{*.sh,*.js}; do
+				if [ -f $filePath ]; then
+					fileName=${filePath/$scriptDirPath\//}
+					ycliCommand=${fileName%.*};
+				fi
+				if [[ ! $ycliCommands == *"$ycliCommand "* ]]; then
+					ycliCommands="$ycliCommands $ycliCommand ";
+				fi
+			done
+
 		fi
 	done
 }
@@ -59,27 +75,30 @@ function _ycliAddCommandsFromPath {
 function _ycliRun {
 	length=$(($#))
 	params=$@
-	scriptPath=${params// /\/};
-	while [ ! -z $scriptPath ]; do
-		globalScriptPath="$YCLI_DIR/scripts/$scriptPath.sh"
-		localScriptPath="./scripts/$scriptPath.sh"
-		if [ -f $localScriptPath ]; then
-			shift $length;
-			source $localScriptPath;
-			return;
-		else
-			if [ -f $globalScriptPath ]; then
-				shift $length;
-				source $globalScriptPath;
+	scriptParamsPath=${params// /\/};
+	while [ ! -z ${scriptParamsPath} ]; do
+
+		for pluginPath in ${ycliPluginsPaths[@]}; do
+			scriptPath="$pluginPath/scripts/$scriptParamsPath.sh";
+			if [ -f ${scriptPath} ]; then
+				shift ${length};
+				source ${scriptPath};
 				return;
 			fi
-		fi
+			nodeScriptPath="$pluginPath/scripts/$scriptParamsPath.js";
+			if [ -f ${nodeScriptPath} ]; then
+				shift ${length};
+				node ${nodeScriptPath} "$@";
+				return;
+			fi
+		done
+
 		length=$((length-1));
-		params=${@:1:$length}
-		scriptPath=${params// /\/}
+		params=${@:1:${length}}
+		scriptParamsPath=${params// /\/}
 	done
 
-	echo "[ERROR] Command $scriptPath not found";
+	echo "[ERROR] Command $scriptParamsPath not found";
 	return;
 }
 
@@ -88,8 +107,7 @@ function ycli() {
 		bash -c "\. \"$YCLI_DIR/ycli.sh\" && \. \"$YCLI_DIR/bash_completion.sh\" && ycli $(printf "'%s' " "$@")"
 	else
 		ycliCommands="";
-		_ycliAddCommandsFromPath "$YCLI_DIR/scripts";
-		_ycliAddCommandsFromPath "./scripts";
+		_ycliAddCommandsForPath ".";
 
 		if [[ -z "$1" || "$1" == "--help" ]]; then
 			_ycliRun help

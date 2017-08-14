@@ -5,8 +5,7 @@
 #
 if [ "$1" == "ycliCommands" ]; then
 	ycliCommands="";
-	_ycliAddCommandsFromPath "$YCLI_DIR/scripts/bower";
-	_ycliAddCommandsFromPath "./scripts/bower";
+	_ycliAddCommandsForPath "bower";
 	echo $ycliCommands;
 	return;
 fi

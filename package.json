@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/daKmoR/ycli#readme",
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "treeify": "^1.0.1"
   }
 }
