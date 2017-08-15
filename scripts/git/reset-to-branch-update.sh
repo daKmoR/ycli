@@ -8,7 +8,7 @@ if [ "$1" == "ycliCommands" ]; then
 fi
 
 if [ -z $1 ]; then
-	echo "[ERROR] You have to provide a branch name e.g. ycli git reset-to-branch-update development";
+	echo "[ERROR] You have to provide a branch name e.g. $ycliName git reset-to-branch-update development";
 	return;
 fi
 

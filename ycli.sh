@@ -1,5 +1,9 @@
 #!/bin/bash
 
+ycliName="ycli";
+ycliLongName="Your/Yo CLI";
+ycliCliPaths=("$YCLI_DIR/ycli.sh");
+
 function _ycliStartTime {
 	if date --version >/dev/null 2>&1 ; then
 		_ycliStartTimeValue=$(date +%s%N)
@@ -51,10 +55,12 @@ for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
 	done
 done
 
-ycliPluginsPaths+=("$YCLI_DIR");
 
 function _ycliAddCommandsForPath {
-	for pluginPath in ${ycliPluginsPaths[@]}; do
+	__ycliPluginsPaths=("${ycliPluginsPaths[@]}");
+	__ycliPluginsPaths+=("$YCLI_DIR");
+
+	for pluginPath in ${__ycliPluginsPaths[@]}; do
 		scriptDirPath="$pluginPath/scripts/$1";
 		if [ -d ${scriptDirPath} ]; then
 
@@ -73,12 +79,15 @@ function _ycliAddCommandsForPath {
 }
 
 function _ycliRun {
+	__ycliPluginsPaths=("${ycliPluginsPaths[@]}");
+	__ycliPluginsPaths+=("$YCLI_DIR");
+
 	length=$(($#))
 	params=$@
 	scriptParamsPath=${params// /\/};
 	while [ ! -z ${scriptParamsPath} ]; do
 
-		for pluginPath in ${ycliPluginsPaths[@]}; do
+		for pluginPath in ${__ycliPluginsPaths[@]}; do
 			scriptPath="$pluginPath/scripts/$scriptParamsPath.sh";
 			if [ -f ${scriptPath} ]; then
 				shift ${length};

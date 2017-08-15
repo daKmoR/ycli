@@ -8,13 +8,13 @@ if [ "$1" == "ycliCommands" ]; then
 fi
 
 echo
-echo "Your/Yo CLI"
+echo "$ycliLongName"
 echo
 echo "Available Commands:"
 for ycliCommand in $ycliCommands;	do
-	echo "    ycli $ycliCommand";
+	echo "    $ycliName $ycliCommand";
 done
 echo
 echo "Example:"
-echo "    ycli self-update"
+echo "    $ycliName self-update"
 echo

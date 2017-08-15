@@ -13,7 +13,7 @@ Multiple actions
 It allows you to easily execute a command for a filtered list of folders.
 
 Hint: use the following command to select all ing and iron elements
-ycli multiple set-filter iron-*
+$ycliName multiple set-filter iron-*
 
 Example Usage:
 
@@ -24,8 +24,8 @@ Demo Structure:
 
 == Simple Example ==
 cd /html/
-ycli multiple set-filter iron-*
-ycli multiple pwd
+$ycliName multiple set-filter iron-*
+$ycliName multiple pwd
 
 Will result in
 [START] Do \"pwd\" for the following components
@@ -43,25 +43,25 @@ Will result in
 cd /html/
 
 2) Set a filter for which folders should be taken into account
-ycli multiple set-filter iron-*
+$ycliName multiple set-filter iron-*
 
 3) Optional: Reset all folders, create/checkout branch, pull latest version
-ycli multiple prepare my-feature-branch-name
+$ycliName multiple prepare my-feature-branch-name
 
 4) the command you wish to do
-ycli multiple ycli upgrade
+$ycliName multiple $ycliName upgrade
 
 5) Add all to git
-ycli multiple git add .
+$ycliName multiple git add .
 
 6) Do a commit for every element (Use ' instead of \")
-ycli multiple git commit -m '[TASK] Run Upgrade'
+$ycliName multiple git commit -m '[TASK] Run Upgrade'
 
 7) Push the changes
-ycli multiple git push origin my-feature-branch-name
+$ycliName multiple git push origin my-feature-branch-name
 OR if not using branches
-ycli multiple git push
+$ycliName multiple git push
 
 8) Optional: Create a Pull Request
-ycli multiple ycli git-lab create-merge-request
+$ycliName multiple $ycliName git-lab create-merge-request
 "

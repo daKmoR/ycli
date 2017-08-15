@@ -8,6 +8,9 @@ if [ "$1" == "ycliCommands" ]; then
 	return;
 fi
 
+currentDir=$(pwd);
+versionFiles=("${currentDir}/package.json" "${currentDir}/bower.json");
+
 optionSkipSecurityCheck=0;
 parameters=($@);
 i=0;
@@ -51,15 +54,13 @@ for parameter in "${parameters[@]}"; do
 		echo "";
 		return;
 	fi
-	if [[ -z "${parameters[0]}" ]]; then
-		parameters[0]="patch";
-	fi
 done
 
-currentDir=$(pwd);
+if [[ -z ${parameters[0]} ]]; then
+	parameters[0]="patch";
+fi
 
 currentVersion="";
-versionFiles=("${currentDir}/package.json" "${currentDir}/bower.json");
 for versionFile in "${versionFiles[@]}"; do
 	if [[ -f ${versionFile} ]]; then
 		currentVersion=$(ycli util json ${versionFile} get version);
@@ -131,7 +132,7 @@ if [[ "${parameters[0]}" == "major" || "${parameters[0]}" == "minor" || "${param
 fi
 
 #
-# write new version
+# write new version to versionFiles
 #
 for versionFile in "${versionFiles[@]}"; do
 	if [[ -f ${versionFile} ]]; then

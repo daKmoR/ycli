@@ -42,7 +42,7 @@ for parameter in "$@"; do
 	fi
 done
 
-source $YCLI_DIR/scripts/git/api.sh
+source $YCLI_DIR/scripts/git-lab/api.sh
 
 projectName=$(git remote show origin -n | grep Fetch.URL | sed 's/.*:[0-9]*\///;s/.git$//')
 projectNameEscaped=$(echo $projectName | sed s#/#%2F#g);
@@ -102,11 +102,16 @@ jsonData+=', "remove_source_branch": "true"';
 jsonData+="}";
 
 _ycliStartTime
-echo "[START] GitLab Create Merge Request \"$title\" merging \"$sourceBranch\" into \"$targetBranch\" for \"$projectName\"";
+echo "[START] GitLab Create Merge Request";
+echo "Title: \"$title\"";
+echo "SourceBranch: \"$sourceBranch\"";
+echo "TargetBranch: \"$targetBranch\"";
+echo "ProjectName: \"$projectName\"";
 echo "";
 
 curl -k --header "PRIVATE-TOKEN: $gitLabToken" --header "Content-Type: application/json" -X POST -d "$jsonData" "${gitLabUrl}api/v4/projects/$projectNameEscaped/merge_requests"
 
 _ycliEndTime
+echo "";
 echo "";
 echo "[DONE] Create Merge Request Duration: $(printf %.2f $_ycliDuration)s";

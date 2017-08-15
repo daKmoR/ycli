@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #
 # Bash Autocomplete
 #
@@ -13,21 +12,20 @@ if [ "${@: -1}" == "ycliCommands" ]; then
 	return;
 fi
 
-optionJobs=4;
-optionSaveFilePath=".tmp/_lastBrowserStackTestResult.txt";
+optionJobs=1;
 parameters=($@);
-i=0;
+ycliMultipleNr=0;
 for parameter in ${parameters[@]}; do
-	((i++));
+	((ycliMultipleNr++));
 	if [[ "$parameter" == "--jobs" || "$parameter" == "-j" ]]; then
-		n=$((i+1));
+		n=$((ycliMultipleNr+1));
 		optionJobs=${!n};
 		if [[ ! ${optionJobs} =~ ^-?[0-9]+$ || ! ${optionJobs} -gt 0 ]]; then
 			echo "[ERROR] Your have to provide the amount of parallel jobs that should run as a number > 0 e.g. --jobs 2";
 			return 1;
 		fi
-		unset parameters[$(( i - 1 ))];
-		unset parameters[$(( i ))];
+		unset parameters[$(( ycliMultipleNr - 1 ))];
+		unset parameters[$(( ycliMultipleNr ))];
 	fi
 	if [[ "$parameter" == "--help" ]]; then
 		_ycliRun multiple help
@@ -36,13 +34,13 @@ for parameter in ${parameters[@]}; do
 done
 
 if [ -z "$_ycliMultipleFilters" ]; then
-	echo "[ERROR] You have to set a filter e.g. ycli multiple set-filter iron-*";
+	echo "[ERROR] You have to set a filter e.g. $ycliName multiple set-filter iron-*";
 	echo "[INFO] bash combinator like {iron-*,paper-*] is supported";
 	return 1;
 fi
 
 if [ -z "$1" ]; then
-	echo "[ERROR] You have to provide a command to run e.g. ycli multiple execute pwd";
+	echo "[ERROR] You have to provide a command to run e.g. $ycliName multiple execute pwd";
 	return 1;
 fi
 
@@ -74,16 +72,16 @@ if [[ ${optionJobs} == 1 ]]; then
 	_ycliMultipleResumeElements=${multipleExecute[@]};
 	export _ycliMultipleResumeCommand="${parameters[@]}";
 
-	i=0;
+	ycliMultipleNr=0;
 	for componentRoot in ${multipleExecute[@]}; do
-		((i++))
-		echo "[START] ($i/$numberAll) Component $componentRoot";
+		((ycliMultipleNr++))
+		echo "[START] ($ycliMultipleNr/$numberAll) Component $componentRoot";
 
 		cd $componentRoot
 		"${parameters[@]}"
 		export _ycliMultipleResumeElements="${_ycliMultipleResumeElements[@]/$componentRoot}";
 
-		echo "[DONE] ($i/$numberAll) Component $componentRoot";
+		echo "[DONE] ($ycliMultipleNr/$numberAll) Component $componentRoot";
 		echo "";
 	done
 fi
@@ -93,7 +91,9 @@ fi
 #
 if [[ ${optionJobs} -gt 1 ]]; then
 	parallelCommand="";
-	parallelCommand+="source $YCLI_DIR/ycli.sh; ";
+	for cliPath in ${ycliCliPaths[@]}; do
+		parallelCommand+="source $cliPath; ";
+	done
 	parallelCommand+="cd {1}; ";
 	parallelCommand+="echo \"[START] ({#}/$numberAll) Component {1}\"; ";
 	parallelCommand+="${parameters[@]}; ";
