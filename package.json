@@ -1,10 +1,11 @@
 {
   "name": "ycli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create your own simple and extendable cli",
-  "main": "index.js",
+  "main": "ycli.sh",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./install.sh"
   },
   "repository": {
     "type": "git",

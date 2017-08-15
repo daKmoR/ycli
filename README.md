@@ -5,7 +5,11 @@ Installation
 ------------
 
 ```
-git clone git@github.com:daKmoR/ycli.git && cd ycli && npm install && ./install.sh
+# install via npm
+npm install --global ycli
+
+# install via git
+git clone git@github.com:daKmoR/ycli.git && cd ycli && npm install
 ```
 
 Restart your Terminal/Console!!!

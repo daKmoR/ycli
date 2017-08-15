@@ -20,7 +20,7 @@ fi
 
 installDir=$(pwd);
 sourceString="\nexport YCLI_DIR=\"${installDir}\"\n[ -s \"\$YCLI_DIR/ycli.sh\" ] && \\. \"\$YCLI_DIR/ycli.sh\"  # This loads ycli\n"
-completionString="[ -s \"\$YCLI_DIR/bash_completion.sh\" ] && \\. \"\$YCLI_DIR/bash_completion.sh\"  # This loads tg bash_completion\n"
+completionString="[ -s \"\$YCLI_DIR/bash_completion.sh\" ] && \\. \"\$YCLI_DIR/bash_completion.sh\"  # This loads ycli bash_completion\n"
 
 if ! command grep -cq '/ycli.sh' ~/.bashrc; then
 		command printf "${sourceString}" >> ~/.bashrc
@@ -35,9 +35,10 @@ fi
 if [ -f ~/.zshrc ]; then
 	if ! command grep -cq '/ycli.sh' ~/.zshrc; then
 			command printf "${sourceString}" >> ~/.zshrc
+			command printf "${completionString}" >> ~/.zshrc
 
 			echo "[FINISHED] Setup ycli in ~/.zshrc"
-			echo "Please restart your terminal/command line"
+			echo "Please restart your terminal/command line  [or execute \"source ~/.zshrc\"]"
 		else
 			echo "[INFO] ycli is already present in ~/.zshrc - no action taken"
 	fi
