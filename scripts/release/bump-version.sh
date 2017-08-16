@@ -60,17 +60,11 @@ if [[ -z ${parameters[0]} ]]; then
 	parameters[0]="patch";
 fi
 
-currentVersion="";
-for versionFile in "${versionFiles[@]}"; do
-	if [[ -f ${versionFile} ]]; then
-		currentVersion=$(ycli util json ${versionFile} get version);
-		currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
-		break;
-	fi
-done
+currentVersion=$(_ycliRun release get-current-version);
 if [[ -z "$currentVersion" ]]; then
-	echo "[ERROR] No current version found - I checked here ${versionFiles[@]}";
+	return 1;
 fi
+currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
 
 
 #
@@ -136,6 +130,6 @@ fi
 #
 for versionFile in "${versionFiles[@]}"; do
 	if [[ -f ${versionFile} ]]; then
-		ycli util json ${versionFile} set version ${newVersion}
+		_ycliRun util json ${versionFile} set version ${newVersion}
 	fi
 done
