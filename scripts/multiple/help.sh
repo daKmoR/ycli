@@ -12,10 +12,20 @@ Multiple actions
 
 It allows you to easily execute a command for a filtered list of folders.
 
-Hint: use the following command to select all ing and iron elements
-$ycliName multiple set-filter iron-*
+Options:
+  -j --jobs:
+    Lets you run multiple shells for all the commands. [Defaults to 1]
 
-Example Usage:
+Examples:
+  multiple git status
+    => gives the git status of every folder (1 job is fastest here)
+  multiple git push -j 4
+    => pushes all the changes (~4 jobs usually gives the best performance)
+  multiple 'git commit -m \"What did I do\"'
+  multiple 'ls && pwd'
+    => more \"complex\" scripts have to be inside ''
+
+Full Example Usage:
 
 Demo Structure:
 /html/iron-button-styles
@@ -54,8 +64,8 @@ $ycliName multiple $ycliName upgrade
 5) Add all to git
 $ycliName multiple git add .
 
-6) Do a commit for every element (Use ' instead of \")
-$ycliName multiple git commit -m '[TASK] Run Upgrade'
+6) Do a commit for every element
+$ycliName multiple 'git commit -m \"[TASK] Run Upgrade\"'
 
 7) Push the changes
 $ycliName multiple git push origin my-feature-branch-name

@@ -78,7 +78,7 @@ if [[ ${optionJobs} == 1 ]]; then
 		echo "[START] ($ycliMultipleNr/$numberAll) Component $componentRoot";
 
 		cd $componentRoot
-		"${parameters[@]}"
+		eval "${parameters[@]}"
 		export _ycliMultipleResumeElements="${_ycliMultipleResumeElements[@]/$componentRoot}";
 
 		echo "[DONE] ($ycliMultipleNr/$numberAll) Component $componentRoot";
