@@ -2,6 +2,7 @@
 
 ycliName="ycli";
 ycliLongName="Your/Yo CLI";
+ycliConfigPaths=("$YCLI_DIR/.yclirc.json");
 ycliCliPaths=("$YCLI_DIR/ycli.sh");
 
 function _ycliStartTime {
