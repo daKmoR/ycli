@@ -143,7 +143,7 @@ for (let jsonFilePath of options.jsonFilePaths) {
 	let didSomething = false;
 	let jsonData = {};
 	if (fs.existsSync(jsonFilePath)) {
-		let jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+		jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
 	}
 
 	//

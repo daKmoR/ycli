@@ -4,7 +4,7 @@
 # Bash Autocomplete
 #
 if [ "$1" == "ycliCommands" ]; then
-	echo "--get --get-merged --get-keys --get-keys-merged --delete --set";
+	echo "get get-merged get-keys get-keys-merged delete set";
 	return;
 fi
 
