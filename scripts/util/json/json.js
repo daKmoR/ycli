@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const untildify = require('untildify');
 
 let options = {
 	jsonFilePaths: [],
@@ -16,8 +17,8 @@ for (let key = 0; key < process.argv.length; key++) {
 		case '--files':
 			let i = key+1;
 			while (i < process.argv.length) {
-				if (fs.existsSync(params[i])) {
-					options.jsonFilePaths.push(params[i]);
+				if (fs.existsSync(untildify(params[i]))) {
+					options.jsonFilePaths.push(untildify(params[i]));
 					i++;
 				} else {
 					break;
@@ -27,7 +28,7 @@ for (let key = 0; key < process.argv.length; key++) {
 			break;
 		case '-f':
 		case '--file':
-			options.jsonFilePaths.push(params[key+1]);
+			options.jsonFilePaths.push(untildify(params[key+1]));
 			break;
 		case 'd':
 		case 'delete':
@@ -118,7 +119,7 @@ if (options.method === 'get-merged' || options.method === 'get-merged-keys') {
 	//
 	if (options.method === 'get-merged') {
 		let result = (options.propertyPath !== undefined) ? _.get(jsonData, options.propertyPath) : jsonData;
-		console.log(result);
+		console.log(result !== undefined ? result : '');
 	}
 
 	//
@@ -151,7 +152,7 @@ for (let jsonFilePath of options.jsonFilePaths) {
 	//
 	if (options.method === 'get') {
 		let result = (options.propertyPath !== undefined) ? _.get(jsonData, options.propertyPath) : jsonData;
-		console.log(result);
+		console.log(result !== undefined ? result : '');
 	}
 
 	//
