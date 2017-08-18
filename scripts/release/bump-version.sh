@@ -9,7 +9,8 @@ if [ "$1" == "ycliCommands" ]; then
 fi
 
 currentDir=$(pwd);
-versionFiles=("${currentDir}/package.json" "${currentDir}/bower.json");
+jsonFiles=("${currentDir}/package.json" "${currentDir}/bower.json");
+textFiles=("${currentDir}/README.md");
 
 optionSkipSecurityCheck=0;
 parameters=($@);
@@ -126,10 +127,22 @@ if [[ "${parameters[0]}" == "major" || "${parameters[0]}" == "minor" || "${param
 fi
 
 #
-# write new version to versionFiles
+# write new version to jsonFiles
 #
-for versionFile in "${versionFiles[@]}"; do
-	if [[ -f ${versionFile} ]]; then
-		_ycliRun util json ${versionFile} set version ${newVersion}
+for jsonFile in "${jsonFiles[@]}"; do
+	if [[ -f ${jsonFile} ]]; then
+		_ycliRun util json ${jsonFile} set version ${newVersion}
+	fi
+done
+
+#
+# write new version to textFiles
+#
+for textFile in "${textFiles[@]}"; do
+	if [[ -f ${textFile} ]]; then
+		if grep -q ${currentVersion} ${textFile}; then
+			sed -i "s/${currentVersion}/${newVersion}/g" ${textFile}
+			echo "[CHANGE] File $textFile has been touched :: String Replace \"$currentVersion\" to \"$newVersion\"";
+		fi
 	fi
 done
