@@ -129,11 +129,7 @@ fi
 #
 # write new version to jsonFiles
 #
-for jsonFile in "${jsonFiles[@]}"; do
-	if [[ -f ${jsonFile} ]]; then
-		_ycliRun util json ${jsonFile} set version ${newVersion}
-	fi
-done
+_ycliRun util json set version ${newVersion} --files ${jsonFiles[@]}
 
 #
 # write new version to textFiles
