@@ -43,6 +43,9 @@ for parameter in "$@"; do
 done
 
 source $YCLI_DIR/scripts/git-lab/api.sh
+if [ $? -ne 0 ]; then
+	return 1;
+fi
 
 projectName=$(git remote show origin -n | grep Fetch.URL | sed 's/.*:[0-9]*\///;s/.git$//')
 projectNameEscaped=$(echo $projectName | sed s#/#%2F#g);
@@ -109,7 +112,7 @@ echo "TargetBranch: \"$targetBranch\"";
 echo "ProjectName: \"$projectName\"";
 echo "";
 
-curl -k --header "PRIVATE-TOKEN: $gitLabToken" --header "Content-Type: application/json" -X POST -d "$jsonData" "${gitLabUrl}api/v4/projects/$projectNameEscaped/merge_requests"
+curl -k --header "PRIVATE-TOKEN: $ycliGitLabApiToken" --header "Content-Type: application/json" -X POST -d "$jsonData" "${ycliGitLabApiUrl}api/v4/projects/$projectNameEscaped/merge_requests"
 
 _ycliEndTime
 echo "";

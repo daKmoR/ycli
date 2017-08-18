@@ -13,7 +13,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ -z "$2" ]; then
-	echo "[ERROR] The send parameter needs to be a string value. Example set ycli.name newValue";
+	echo "[ERROR] The second parameter needs to be a string value. Example set ycli.name newValue";
 	return 1;
 fi
 
