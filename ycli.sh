@@ -46,6 +46,7 @@ ycliFoundPluginsPaths+=(".");
 
 ycliPluginsCollectionsDirs=();
 ycliPluginsCollectionsDirs+=($(npm root -g));
+ycliPluginsCollectionsDirs+=("~");
 ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
 for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
 	for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
@@ -58,7 +59,7 @@ done
 
 function _ycliAddCommandsForPath {
 	for pluginPath in ${ycliPluginsPaths[@]}; do
-		scriptDirPath="$pluginPath/scripts/$1";
+		scriptDirPath="$pluginPath/ycli-scripts/$1";
 		if [ -d ${scriptDirPath} ]; then
 
 			for filePath in ${scriptDirPath}/{*.sh,*.js}; do
@@ -83,13 +84,13 @@ function _ycliRun {
 	while [ ! -z ${scriptParamsPath} ]; do
 
 		for pluginPath in ${ycliPluginsPaths[@]}; do
-			scriptPath="$pluginPath/scripts/$scriptParamsPath.sh";
+			scriptPath="$pluginPath/ycli-scripts/$scriptParamsPath.sh";
 			if [ -f ${scriptPath} ]; then
 				shift ${length};
 				source ${scriptPath};
 				return;
 			fi
-			nodeScriptPath="$pluginPath/scripts/$scriptParamsPath.js";
+			nodeScriptPath="$pluginPath/ycli-scripts/$scriptParamsPath.js";
 			if [ -f ${nodeScriptPath} ]; then
 				shift ${length};
 				node ${nodeScriptPath} "$@";

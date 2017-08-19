@@ -12,4 +12,4 @@ if [ "$2" == "ycliCommands" ]; then
 	return;
 fi
 
-node $YCLI_DIR/scripts/util/json/json.js "$@"
+node $YCLI_DIR/ycli-scripts/util/json/json.js "$@"

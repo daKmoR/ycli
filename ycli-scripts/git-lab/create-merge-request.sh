@@ -42,7 +42,7 @@ for parameter in "$@"; do
 	fi
 done
 
-source $YCLI_DIR/scripts/git-lab/api.sh
+source $YCLI_DIR/ycli-scripts/git-lab/api.sh
 if [ $? -ne 0 ]; then
 	return 1;
 fi
