@@ -100,9 +100,15 @@ function preparePkg(pkgObject, options) {
 		if (pkgObject.dependencies) {
 			for (let key of Object.keys(pkgObject.dependencies)) {
 				if (wantedDependencies.includes(key)) {
-					const targetVersion = pkgObject.dependencies[key].endpoint.target;
-					const releaseVersion = pkgObject.dependencies[key].pkgMeta._release;
-					const id = options.includeVersions ? `${key}#${releaseVersion} (${targetVersion})` : key;
+					let id = key;
+					if (options.includeVersions) {
+						const targetVersion = pkgObject.dependencies[key].endpoint.target;
+						let releaseVersion = 'xxx';
+						if (pkgObject.dependencies[key].pkgMeta && pkgObject.dependencies[key].pkgMeta._release) {
+							releaseVersion = pkgObject.dependencies[key].pkgMeta._release;
+						}
+						id = `${key}#${releaseVersion} (${targetVersion})`;
+					}
 					pkgTree[id] = preparePkg(pkgObject.dependencies[key], options);
 				}
 			}
