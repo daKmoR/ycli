@@ -40,22 +40,27 @@ if [[ $- == *i* ]]; then
 	cReset=$(tput sgr0)
 fi
 
+function _ycliFindPlugins {
+	ycliPluginPattern="ycli-";
+	if [ ! -z "$1" ]; then
+		ycliPluginPattern="$1";
+	fi
 
-ycliFoundPluginsPaths=();
-ycliFoundPluginsPaths+=(".");
+	ycliFoundPluginsPaths=();
+	ycliFoundPluginsPaths+=(".");
 
-ycliPluginsCollectionsDirs=();
-ycliPluginsCollectionsDirs+=($(npm root -g));
-ycliPluginsCollectionsDirs+=("~");
-ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
-for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
-	for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
-		if [[ -d ${possiblePluginDir} && $(basename ${possiblePluginDir}) == "ycli-"* ]]; then
-			ycliFoundPluginsPaths+=("$possiblePluginDir");
-		fi
+	ycliPluginsCollectionsDirs=();
+	ycliPluginsCollectionsDirs+=($(npm root -g));
+	ycliPluginsCollectionsDirs+=($(echo ~));
+	ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
+	for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
+		for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
+			if [[ -d ${possiblePluginDir} && $(basename ${possiblePluginDir}) == "$ycliPluginPattern"* ]]; then
+				ycliFoundPluginsPaths+=("$possiblePluginDir");
+			fi
+		done
 	done
-done
-
+}
 
 function _ycliAddCommandsForPath {
 	for pluginPath in ${ycliPluginsPaths[@]}; do
@@ -134,3 +139,5 @@ function ycli() {
 		fi
 	fi
 }
+
+_ycliFindPlugins

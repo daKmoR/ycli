@@ -86,8 +86,9 @@ A Plugin is automatically identified if it starts with `ycli-` and resists in on
 
 If you wish to have something globally just do the following:
 
-	mkdir ~/ycli-user-plugin/ycli-scripts # create needed plugin
+	mkdir -p ~/ycli-user-plugin/ycli-scripts # create needed plugin
 	touch ~/ycli-user-plugin/ycli-scripts/my-user-script.sh # add new script
+	_ycliFindPlugins # or just restart your terminal/console
 	ycli
 	...
 	Available Commands:
