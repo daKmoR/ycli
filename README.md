@@ -74,6 +74,10 @@ Example:
 Search for `ycli-` on npm/github. Usually you can easily install it either via
 `npm -g install <name>` or clone/copy it into your home folder.
 
+*Currently known plugins:*
+
+- [ycli-wct-browserstack](https://github.com/daKmoR/ycli-wct-browserstack)
+
 **System**
 
 A Plugin is automatically identified if it starts with `ycli-` and resists in on of the following folders.
