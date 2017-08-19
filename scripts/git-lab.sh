@@ -4,9 +4,9 @@
 # Bash Autocomplete
 #
 if [ "$1" == "ycliCommands" ]; then
-	ycliCommands="";
+	ycliCommands=();
 	_ycliAddCommandsForPath "git-lab";
-	echo $ycliCommands;
+	echo "${ycliCommands[@]}";
 	return;
 fi
 if [ "$2" == "ycliCommands" ]; then

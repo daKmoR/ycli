@@ -1,7 +1,6 @@
 #!/bin/bash
 
-ycliName="ycli";
-ycliLongName="Your/Yo CLI";
+ycliSubCli=0;
 ycliConfigPaths=("$YCLI_DIR/.yclirc.json");
 ycliCliPaths=("$YCLI_DIR/ycli.sh");
 
@@ -42,8 +41,8 @@ if [[ $- == *i* ]]; then
 fi
 
 
-ycliPluginsPaths=();
-ycliPluginsPaths+=(".");
+ycliFoundPluginsPaths=();
+ycliFoundPluginsPaths+=(".");
 
 ycliPluginsCollectionsDirs=();
 ycliPluginsCollectionsDirs+=($(npm root -g));
@@ -51,27 +50,25 @@ ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
 for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
 	for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
 		if [[ -d ${possiblePluginDir} && $(basename ${possiblePluginDir}) == "ycli-"* ]]; then
-			ycliPluginsPaths+=("$possiblePluginDir");
+			ycliFoundPluginsPaths+=("$possiblePluginDir");
 		fi
 	done
 done
 
 
 function _ycliAddCommandsForPath {
-	__ycliPluginsPaths=("${ycliPluginsPaths[@]}");
-	__ycliPluginsPaths+=("$YCLI_DIR");
-
-	for pluginPath in ${__ycliPluginsPaths[@]}; do
+	for pluginPath in ${ycliPluginsPaths[@]}; do
 		scriptDirPath="$pluginPath/scripts/$1";
 		if [ -d ${scriptDirPath} ]; then
 
 			for filePath in ${scriptDirPath}/{*.sh,*.js}; do
-				if [ -f $filePath ]; then
+				if [ -f "$filePath" ]; then
 					fileName=${filePath/$scriptDirPath\//}
 					ycliCommand=${fileName%.*};
-				fi
-				if [[ ! $ycliCommands == *"$ycliCommand "* ]]; then
-					ycliCommands="$ycliCommands $ycliCommand ";
+
+					if [[ ! " ${ycliCommands[@]} " =~ " $ycliCommand " ]]; then
+						ycliCommands+=("$ycliCommand");
+					fi
 				fi
 			done
 
@@ -80,15 +77,12 @@ function _ycliAddCommandsForPath {
 }
 
 function _ycliRun {
-	__ycliPluginsPaths=("${ycliPluginsPaths[@]}");
-	__ycliPluginsPaths+=("$YCLI_DIR");
-
 	length=$(($#))
 	params=$@
 	scriptParamsPath=${params// /\/};
 	while [ ! -z ${scriptParamsPath} ]; do
 
-		for pluginPath in ${__ycliPluginsPaths[@]}; do
+		for pluginPath in ${ycliPluginsPaths[@]}; do
 			scriptPath="$pluginPath/scripts/$scriptParamsPath.sh";
 			if [ -f ${scriptPath} ]; then
 				shift ${length};
@@ -113,10 +107,17 @@ function _ycliRun {
 }
 
 function ycli() {
+	if [ $ycliSubCli == 0 ]; then
+		ycliName="ycli";
+		ycliLongName="Your/Yo CLI";
+		ycliPluginsPaths=(${ycliFoundPluginsPaths[@]});
+		ycliPluginsPaths+=("$YCLI_DIR");
+	fi
+
 	if [ "$(ps -p "$$" -o comm=)" != "bash" ]; then
 		bash -c "\. \"$YCLI_DIR/ycli.sh\" && \. \"$YCLI_DIR/bash_completion.sh\" && ycli $(printf "'%s' " "$@")"
 	else
-		ycliCommands="";
+		ycliCommands=();
 		_ycliAddCommandsForPath ".";
 
 		if [[ -z "$1" || "$1" == "--help" ]]; then
@@ -124,7 +125,7 @@ function ycli() {
 
 		else
 			if [ "$1" == "ycliCommands" ]; then
-				echo "$ycliCommands";
+				echo "${ycliCommands[@]}";
 
 			else
 				_ycliRun "$@"

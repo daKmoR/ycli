@@ -3,9 +3,9 @@
 # Bash Autocomplete
 #
 if [ "$1" == "ycliCommands" ]; then
-	ycliCommands="";
+	ycliCommands=();
 	_ycliAddCommandsForPath "multiple";
-	echo $ycliCommands;
+	echo "${ycliCommands[@]}";
 	return;
 fi
 if [ "${@: -1}" == "ycliCommands" ]; then

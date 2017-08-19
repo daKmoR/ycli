@@ -11,7 +11,7 @@ echo
 echo "$ycliLongName"
 echo
 echo "Available Commands:"
-for ycliCommand in $ycliCommands;	do
+for ycliCommand in ${ycliCommands[@]};	do
 	echo "    $ycliName $ycliCommand";
 done
 echo
