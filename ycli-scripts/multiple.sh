@@ -8,7 +8,7 @@ if [ "$1" == "ycliCommands" ]; then
 	echo "${ycliCommands[@]}";
 	return;
 fi
-if [ "${@: -1}" == "ycliCommands" ]; then
+if [ "${@:-1}" == "ycliCommands" ]; then
 	return;
 fi
 

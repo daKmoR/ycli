@@ -2,6 +2,7 @@
 
 if [ ! -f ~/.bashrc ]; then
 	echo "[INFO] ~/.bashrc missing are you sure ycli is installed";
+	return 1;
 fi
 
 if command grep -cq 'YCLI_DIR' ~/.bashrc; then

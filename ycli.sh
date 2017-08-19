@@ -113,16 +113,14 @@ function _ycliRun {
 }
 
 function ycli() {
-	if [ $ycliSubCli == 0 ]; then
-		ycliName="ycli";
-		ycliLongName="Your/Yo CLI";
-		ycliPluginsPaths=(${ycliFoundPluginsPaths[@]});
-		ycliPluginsPaths+=("$YCLI_DIR");
-	fi
+	if [ -n "$BASH_VERSION" ]; then
+		if [ ${ycliSubCli} == 0 ]; then
+			ycliName="ycli";
+			ycliLongName="Your/Yo CLI";
+			ycliPluginsPaths=(${ycliFoundPluginsPaths[@]});
+			ycliPluginsPaths+=("$YCLI_DIR");
+		fi
 
-	if [ "$(ps -p "$$" -o comm=)" != "bash" ]; then
-		bash -c "\. \"$YCLI_DIR/ycli.sh\" && \. \"$YCLI_DIR/bash_completion.sh\" && ycli $(printf "'%s' " "$@")"
-	else
 		ycliCommands=();
 		_ycliAddCommandsForPath ".";
 
@@ -137,6 +135,11 @@ function ycli() {
 				_ycliRun "$@"
 			fi
 		fi
+
+	else
+		currentDir=$(pwd);
+		bash -i -c "cd $currentDir && ycli $(printf "'%s' " "$@")"
+
 	fi
 }
 
