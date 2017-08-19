@@ -79,10 +79,6 @@ if [[ ${optionSkipSecurityCheck} == 0 ]]; then
 		return 1;
 	fi
 
-	if [[ "$remoteStatus" == "up-to-date" ]]; then
-		echo "[ERROR] Nothing changed in comparison to remote - abort";
-		return 1;
-	fi
 fi
 
 #
