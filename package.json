@@ -1,6 +1,6 @@
 {
   "name": "ycli",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Create your own simple and extendable cli",
   "main": "ycli.sh",
   "scripts": {
