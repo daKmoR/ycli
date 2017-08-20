@@ -18,4 +18,4 @@ if [ -f "~/.yclirc.json" ]; then
 	__ycliConfigPaths+=("~/.yclirc.json");
 fi
 
-_ycliRun util json get-merged "$1" --files "${__ycliConfigPaths[@]}"
+ycli util json get-merged "$1" --files "${__ycliConfigPaths[@]}"

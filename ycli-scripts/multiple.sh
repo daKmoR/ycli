@@ -28,7 +28,7 @@ for parameter in ${parameters[@]}; do
 		unset parameters[$(( ycliMultipleNr ))];
 	fi
 	if [[ "$parameter" == "--help" ]]; then
-		_ycliRun multiple help
+		ycli multiple help
 		return;
 	fi
 done

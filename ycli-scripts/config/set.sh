@@ -17,4 +17,4 @@ if [ -z "$2" ]; then
 	return 1;
 fi
 
-_ycliRun util json set "$1" "$2" --file "./.yclirc.json"
+ycli util json set "$1" "$2" --file "./.yclirc.json"

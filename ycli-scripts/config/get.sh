@@ -29,4 +29,4 @@ while [ "$checkDir" != "/" ]; do
 done
 __ycliConfigPaths+=(${pathConfigs[@]});
 
-_ycliRun util json get-merged "$1" --files "${__ycliConfigPaths[@]}"
+ycli util json get-merged "$1" --files "${__ycliConfigPaths[@]}"

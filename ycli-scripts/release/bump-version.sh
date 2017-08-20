@@ -61,7 +61,7 @@ if [[ -z ${parameters[0]} ]]; then
 	parameters[0]="patch";
 fi
 
-currentVersion=$(_ycliRun release get-current-version);
+currentVersion=$(ycli release get-current-version);
 if [[ -z "$currentVersion" ]]; then
 	return 1;
 fi
@@ -72,7 +72,7 @@ currentSemVer=$(echo ${currentVersion} | grep -o "^[0-9]*\.[0-9]*\.[0-9]*");
 # Checking if the release actually has changes
 #
 if [[ ${optionSkipSecurityCheck} == 0 ]]; then
-	remoteStatus=$(_ycliRun git remote-status)
+	remoteStatus=$(ycli git remote-status)
 
 	if [[ "$remoteStatus" == "need-to-pull" || "$remoteStatus" == "diverged" ]]; then
 		echo "[ERROR] Your local git is not up to date - use git pull";
@@ -125,7 +125,7 @@ fi
 #
 # write new version to jsonFiles
 #
-_ycliRun util json set version ${newVersion} --files ${jsonFiles[@]}
+ycli util json set version ${newVersion} --files ${jsonFiles[@]}
 
 #
 # write new version to textFiles
