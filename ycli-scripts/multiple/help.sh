@@ -12,6 +12,16 @@ Multiple actions
 
 It allows you to easily execute a command for a filtered list of folders.
 
+Commands:
+  add/remove/set/reset:
+    Modify the list of effected directories
+  list
+    Show the currently effected directories
+  resume
+    Let's you continue a cancelled multiple command
+  prepare
+    runs git reset-to-branch-update so the dirs should be up to date and change/pushable
+
 Options:
   -j --jobs:
     Lets you run multiple shells for all the commands. [Defaults to 1]
@@ -34,7 +44,7 @@ Demo Structure:
 
 == Simple Example ==
 cd /html/
-$ycliName multiple set-filter iron-*
+$ycliName multiple add iron-*
 $ycliName multiple pwd
 
 Will result in
@@ -53,12 +63,12 @@ Will result in
 cd /html/
 
 2) Set a filter for which folders should be taken into account
-$ycliName multiple set-filter iron-*
+$ycliName multiple set iron-*
 
 3) Optional: Reset all folders, create/checkout branch, pull latest version
 $ycliName multiple prepare my-feature-branch-name
 
-4) the command you wish to do
+4) The command you wish to do
 $ycliName multiple $ycliName upgrade
 
 5) Add all to git

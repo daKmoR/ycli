@@ -8,7 +8,7 @@ if [ "$1" == "ycliCommands" ]; then
 	echo "${ycliCommands[@]}";
 	return;
 fi
-if [ "${@:-1}" == "ycliCommands" ]; then
+if [ "${@: -1}" == "ycliCommands" ]; then
 	return;
 fi
 
@@ -33,8 +33,8 @@ for parameter in ${parameters[@]}; do
 	fi
 done
 
-if [ -z "$_ycliMultipleFilters" ]; then
-	echo "[ERROR] You have to set a filter e.g. $ycliName multiple set-filter iron-*";
+if [ -z "$ycliMultipleElements" ]; then
+	echo "[ERROR] You have to set provide elements e.g. $ycliName multiple add iron-*";
 	echo "[INFO] bash combinator like {iron-*,paper-*] is supported";
 	return 1;
 fi
@@ -56,12 +56,11 @@ fi
 
 _ycliStartTime
 
-multipleExecute=($_ycliMultipleFilters);
-numberAll=${#multipleExecute[@]};
+numberAll=${#ycliMultipleElements[@]};
 currentDir=$(pwd)
 
 echo "[START] Do \"${parameters[@]}\" for the following $numberAll components";
-for componentRoot in ${multipleExecute[@]}; do
+for componentRoot in ${ycliMultipleElements[@]}; do
 	echo "- $componentRoot";
 done
 
@@ -69,21 +68,23 @@ done
 # Sequential Execution
 #
 if [[ ${optionJobs} == 1 ]]; then
-	_ycliMultipleResumeElements=${multipleExecute[@]};
-	export _ycliMultipleResumeCommand="${parameters[@]}";
+	ycliMultipleResumeElements=${ycliMultipleElements[@]};
+	ycliMultipleResumeCommand="${parameters[@]}";
 
 	ycliMultipleNr=0;
-	for componentRoot in ${multipleExecute[@]}; do
+	for componentRoot in ${ycliMultipleElements[@]}; do
 		((ycliMultipleNr++))
 		echo "[START] ($ycliMultipleNr/$numberAll) Component $componentRoot";
 
 		cd $componentRoot
 		eval "${parameters[@]}"
-		export _ycliMultipleResumeElements="${_ycliMultipleResumeElements[@]/$componentRoot}";
+		ycliMultipleResumeElements="${ycliMultipleResumeElements[@]/$componentRoot}";
 
 		echo "[DONE] ($ycliMultipleNr/$numberAll) Component $componentRoot";
 		echo "";
 	done
+
+	ycliMultipleResumeElements=();
 fi
 
 #
@@ -100,7 +101,7 @@ if [[ ${optionJobs} -gt 1 ]]; then
 	parallelCommand+="echo \"[DONE] ({#}/$numberAll) Component {1}\"; ";
 	parallelCommand+="echo \"\"; ";
 
-	parallel -k -j ${optionJobs} "${parallelCommand}" ::: ${multipleExecute[@]}
+	parallel -k -j ${optionJobs} "${parallelCommand}" ::: ${ycliMultipleElements[@]}
 fi
 
 cd ${currentDir}

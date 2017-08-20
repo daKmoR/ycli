@@ -143,6 +143,60 @@ Highlights
 
 **ycli multiple**
 
+```
+$ ls
+iron-icon  iron-image  paper-button  paper-slider
+
+$ ycli multiple set paper-*
+[INFO] The following components will be affected
+- /mnt/c/html/paper-button
+- /mnt/c/html/paper-slider
+
+$ ycli multiple add iron-icon
+[INFO] The following components will be affected
+- /mnt/c/html/paper-button
+- /mnt/c/html/paper-slider
+- /mnt/c/html/iron-icon
+
+$  ycli multiple ycli bower release-check
+[START] Do "ycli bower release-check" for the following 3 components
+- /mnt/c/html/paper-button
+- /mnt/c/html/paper-slider
+- /mnt/c/html/iron-icon
+[START] (1/3) Component /mnt/c/html/paper-button
+✓ Bower Repository has the same latest version 2.0.0
+[DONE] (1/3) Component /mnt/c/html/paper-button
+
+[START] (2/3) Component /mnt/c/html/paper-slider
+✓ Bower Repository has the same latest version 2.0.2
+[DONE] (2/3) Component /mnt/c/html/paper-slider
+
+[START] (3/3) Component /mnt/c/html/iron-icon
+✓ Bower Repository has the same latest version 2.0.1
+[DONE] (3/3) Component /mnt/c/html/iron-icon
+
+[DONE] Multiple Actions Duration: 8.89s
+
+$ ycli multiple git pull
+[START] Do "git pull" for the following 3 components
+- /mnt/c/html/paper-button
+- /mnt/c/html/paper-slider
+- /mnt/c/html/iron-icon
+[START] (1/3) Component /mnt/c/html/paper-button
+Already up-to-date.
+[DONE] (1/3) Component /mnt/c/html/paper-button
+
+[START] (2/3) Component /mnt/c/html/paper-slider
+Already up-to-date.
+[DONE] (2/3) Component /mnt/c/html/paper-slider
+
+[START] (3/3) Component /mnt/c/html/iron-icon
+Already up-to-date.
+[DONE] (3/3) Component /mnt/c/html/iron-icon
+
+[DONE] Multiple Actions Duration: 3.26s
+```
+
 It let's you execute a command for a defined list of directories. For example you can just do a git pull for all your
 element by typing `ycli multiple git pull`. It does this sequentially one after each other.
 
@@ -152,5 +206,18 @@ that for smaller tasks the spawing might take longer then the command itself. So
 use multiple jobs - `rm someTmpFile.txt` will be much fast just run in one bash in sequential order.
 
 For more information see `ycli multiple --help`.
+
+**ycli bower dependency-tree**
+
+Displays a dependency tree (incl. versions with set option) that can be filtered via a pattern.
+
+```
+$ cd paper-button
+$ ycli bower dependency-tree -v --pattern paper-
+paper-button
+├─ paper-behaviors#2.0.0 (1 - 2)
+│  └─ paper-ripple#2.0.1 (1 - 2)
+└─ paper-styles#2.0.0 (1 - 2)
+```
 
 Use autocomplete (tab, tab) to show all Commands or SubCommands.
