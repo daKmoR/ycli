@@ -13,4 +13,4 @@ if [ "$2" == "ycliCommands" ]; then
 	return;
 fi
 
-echo "Please use a git subcommand";
+echo "Please use a config subcommand";

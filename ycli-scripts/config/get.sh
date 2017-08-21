@@ -14,7 +14,7 @@ fi
 
 __ycliConfigPaths=("${ycliConfigPaths[@]}");
 
-if [ -f "~/.yclirc.json" ]; then
+if [ -f ~/.yclirc.json ]; then
 	__ycliConfigPaths+=("~/.yclirc.json");
 fi
 
