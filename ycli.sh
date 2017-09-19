@@ -50,9 +50,9 @@ function _ycliFindPlugins {
 	ycliFoundPluginsPaths+=(".");
 
 	ycliPluginsCollectionsDirs=();
-	ycliPluginsCollectionsDirs+=($(npm root -g));
-	ycliPluginsCollectionsDirs+=($(echo ~));
 	ycliPluginsCollectionsDirs+=($(dirname $YCLI_DIR));
+	ycliPluginsCollectionsDirs+=($(echo ~));
+	ycliPluginsCollectionsDirs+=($(npm root -g));
 	for ycliPluginsCollectionsDir in ${ycliPluginsCollectionsDirs[@]}; do
 		for possiblePluginDir in ${ycliPluginsCollectionsDir}/*; do
 			if [[ -d ${possiblePluginDir} && $(basename ${possiblePluginDir}) == "$ycliPluginPattern"* ]]; then
@@ -78,6 +78,16 @@ function _ycliAddCommandsForPath {
 				fi
 			done
 
+		fi
+	done
+}
+
+function _ycliGetPath {
+	for pluginPath in ${ycliPluginsPaths[@]}; do
+		filePath="$pluginPath/ycli-scripts/$1";
+		if [ -f ${filePath} ]; then
+			echo "$filePath";
+			return 0;
 		fi
 	done
 }
