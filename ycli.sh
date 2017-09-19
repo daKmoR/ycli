@@ -123,34 +123,34 @@ function _ycliRun {
 }
 
 function ycli() {
-	if [ -n "$BASH_VERSION" ]; then
-		if [ ${ycliSubCli} == 0 ]; then
-			ycliName="ycli";
-			ycliLongName="Your/Yo CLI";
-			ycliPluginsPaths=(${ycliFoundPluginsPaths[@]});
-			ycliPluginsPaths+=("$YCLI_DIR");
-		fi
-
-		ycliCommands=();
-		_ycliAddCommandsForPath ".";
-
-		if [[ -z "$1" || "$1" == "--help" ]]; then
-			_ycliRun help
-
-		else
-			if [ "$1" == "ycliCommands" ]; then
-				echo "${ycliCommands[@]}";
-
-			else
-				_ycliRun "$@"
-			fi
-		fi
-
-	else
-		currentDir=$(pwd);
-		bash -i -c "cd $currentDir && ycli $(printf "'%s' " "$@")"
-
+	if [ ${ycliSubCli} == 0 ]; then
+		ycliName="ycli";
+		ycliLongName="Your/Yo CLI";
+		ycliDir="$YCLI_DIR";
+		ycliPluginsPaths=(${ycliFoundPluginsPaths[@]});
+		ycliPluginsPaths+=("$YCLI_DIR");
 	fi
+
+	ycliCommands=();
+	_ycliAddCommandsForPath ".";
+
+	if [[ -z "$1" || "$1" == "--help" ]]; then
+		_ycliRun help
+		return;
+	fi
+	if [[ "$1" == "--version" ]]; then
+		_versionCurrentDir=$(pwd);
+		cd "$ycliDir";
+		ycli release get-current-version
+		cd "$_versionCurrentDir";
+		return;
+	fi
+	if [ "$1" == "ycliCommands" ]; then
+		echo "${ycliCommands[@]}";
+		return;
+	fi
+
+	_ycliRun "$@"
 }
 
 _ycliFindPlugins
