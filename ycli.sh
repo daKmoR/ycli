@@ -139,13 +139,13 @@ function ycli() {
 	_ycliAddCommandsForPath ".";
 
 	if [[ -z "$1" || "$1" == "--help" ]]; then
-		_ycliRun help
+		ycli-raw help
 		return;
 	fi
 	if [[ "$1" == "--version" ]]; then
 		_versionCurrentDir=$(pwd);
 		cd "$ycliDir";
-		ycli release get-current-version
+		ycli-raw release get-current-version
 		cd "$_versionCurrentDir";
 		return;
 	fi
@@ -157,6 +157,21 @@ function ycli() {
 	_ycliRun "$@"
 
 	LC_NUMERIC="$savedLC_NUMERIC";
+}
+
+function ycli-raw() {
+	ycliSubCliModify=0;
+	if [ ${ycliSubCli} == 1 ]; then
+		ycliSubCli=0;
+		ycliSubCliModify=1;
+	fi
+
+	ycli "$@"
+
+	if [ ${ycliSubCliModify} == 1 ]; then
+		ycliSubCli=1;
+		ycliSubCliModify=0;
+	fi
 }
 
 _ycliFindPlugins
