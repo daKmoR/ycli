@@ -123,6 +123,10 @@ function _ycliRun {
 }
 
 function ycli() {
+	# users my have a different locale so we set (and reset) it to en_US.UTF-8 just for this call
+	savedLC_NUMERIC="$LC_NUMERIC";
+	LC_NUMERIC="en_US.UTF-8";
+
 	if [ ${ycliSubCli} == 0 ]; then
 		ycliName="ycli";
 		ycliLongName="Your/Yo CLI";
@@ -151,6 +155,8 @@ function ycli() {
 	fi
 
 	_ycliRun "$@"
+
+	LC_NUMERIC="$savedLC_NUMERIC";
 }
 
 _ycliFindPlugins
