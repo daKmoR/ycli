@@ -139,7 +139,7 @@ function ycli() {
 	_ycliAddCommandsForPath ".";
 
 	if [[ -z "$1" || "$1" == "--help" ]]; then
-		ycli-raw help
+		ycli help
 		return;
 	fi
 	if [[ "$1" == "--version" ]]; then
