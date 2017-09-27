@@ -67,7 +67,7 @@ function _ycliAddCommandsForPath {
 		scriptDirPath="$pluginPath/ycli-scripts/$1";
 		if [ -d ${scriptDirPath} ]; then
 
-			for filePath in ${scriptDirPath}/{*.sh,*.js}; do
+			for filePath in ${scriptDirPath}/{*.sh,*.js,*.json}; do
 				if [ -f "$filePath" ]; then
 					fileName=${filePath/$scriptDirPath\//}
 					ycliCommand=${fileName%.*};
