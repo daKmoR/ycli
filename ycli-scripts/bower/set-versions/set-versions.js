@@ -55,19 +55,25 @@ for (let key of params.keys()) {
 
 let didSomething = false;
 
-function prepareVersion(version) {
+function prepareShouldBeVersion(version, currentVersion) {
 	if (!version || (version && typeof(version) !== 'string')) {
 		return false;
 	}
 
-	let parts = version.split('.');
-	let major = parseInt(parts[0].match(/\d/)) || 0;
-	let minor = parseInt(parts[1].match(/\d/)) || 0;
-	let patch = parseInt(parts[2].match(/\d/)) || 0;
-	if (options.resetPatch) {
-		patch = 0;
+	let semVerParts = getSemVerParts(version);
+
+	if (currentVersion) {
+		let currentSemVerParts = getSemVerParts(currentVersion);
+		if (currentSemVerParts.major === semVerParts.major && currentSemVerParts.minor === semVerParts.minor) {
+			semVerParts.patch = currentSemVerParts.patch > semVerParts.patch ? semVerParts.patch : currentSemVerParts.patch;
+		} else {
+			if (options.resetPatch) {
+				semVerParts.patch = 0;
+			}
+		}
 	}
-	let semVersion = `${major}.${minor}.${patch}`;
+	let semVersion = `${semVerParts.major}.${semVerParts.minor}.${semVerParts.patch}`;
+
 	switch(options.mode) {
 		case 'caret':
 			return `^${semVersion}`;
@@ -79,17 +85,26 @@ function prepareVersion(version) {
 			return `${semVersion}`;
 		}
 	}
-	console.log(':');
-	console.log(version);
 	return version;
+}
+
+function getSemVerParts(version) {
+	let parts = version.split('.');
+	let major = parseInt(parts[0].match(/\d/)) || 0;
+	let minor = parseInt(parts[1].match(/\d/)) || 0;
+	let patch = parseInt(parts[2].match(/\d/)) || 0;
+	return {
+		major: major,
+		minor: minor,
+		patch: patch
+	}
 }
 
 if (bowerJson.dependencies) {
 	for (let key in bowerJson.dependencies) {
 		if (bowerJson.dependencies.hasOwnProperty(key)) {
 			let value = bowerJson.dependencies[key];
-			let shouldBe = prepareVersion(updateJson[key]);
-			console.log(shouldBe);
+			let shouldBe = prepareShouldBeVersion(updateJson[key], value);
 			if (shouldBe && shouldBe !== value) {
 				bowerJson.dependencies[key] = shouldBe;
 				didSomething = true;
@@ -102,7 +117,7 @@ if (bowerJson.devDependencies) {
 	for (let key in bowerJson.devDependencies) {
 		if (bowerJson.devDependencies.hasOwnProperty(key)) {
 			let value = bowerJson.devDependencies[key];
-			let shouldBe = prepareVersion(updateJson[key]);
+			let shouldBe = prepareShouldBeVersion(updateJson[key], value);
 			if (shouldBe && shouldBe !== value) {
 				bowerJson.devDependencies[key] = shouldBe;
 				didSomething = true;
