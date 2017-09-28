@@ -12,4 +12,4 @@ if [ -z $1 ]; then
 	return;
 fi
 
-ycli multiple execute $ycliName git reset-to-branch-update $1
+ycli multiple ycli git reset-to-branch-update $1
