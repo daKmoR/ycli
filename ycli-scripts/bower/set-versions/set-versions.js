@@ -9,7 +9,7 @@ let updateJson = JSON.parse(fs.readFileSync(updateJsonFilePath, 'utf8'));
 
 options = {
 	mode: 'caret',
-	resetPatch: false
+	smartSet: false
 };
 
 let params = process.argv;
@@ -28,9 +28,9 @@ for (let key of params.keys()) {
 		case '--as-is':
 			options.mode = 'as-is';
 			break;
-		case '-r':
-		case '--reset-patch':
-			options.resetPatch = true;
+		case '-s':
+		case '--smart-set':
+			options.smartSet = true;
 			break;
 		case '--help':
 			console.log('');
@@ -41,7 +41,9 @@ for (let key of params.keys()) {
 			console.log('Options:');
 			console.log('  -f --fixed: set hard version e.g. 1.2.3');
 			console.log('  -t --tilde: set tilde version e.g. ~1.2.3');
-			console.log('  -r --reset-patch: set patch to 0 e.g. 1.2.3 becomes 1.2.0');
+			console.log('  -s --smart-set: tries to set to the optimal compatibility version');
+			console.log('      e.g. is: 2.0.3 should be: 2.0.7 => 2.0.3');
+			console.log('      e.g. is: 2.0.3 should be: 2.1.3 => 2.1.0');
 			console.log('  -a --as-is: Include the versions of the dependencies');
 			console.log('');
 			console.log('Examples:');
@@ -62,42 +64,49 @@ function prepareShouldBeVersion(version, currentVersion) {
 
 	let semVerParts = getSemVerParts(version);
 
-	if (currentVersion) {
-		let currentSemVerParts = getSemVerParts(currentVersion);
-		if (currentSemVerParts.major === semVerParts.major && currentSemVerParts.minor === semVerParts.minor) {
-			semVerParts.patch = currentSemVerParts.patch > semVerParts.patch ? semVerParts.patch : currentSemVerParts.patch;
-		} else {
-			if (options.resetPatch) {
-				semVerParts.patch = 0;
+	if (semVerParts) {
+		if (currentVersion) {
+			let currentSemVerParts = getSemVerParts(currentVersion);
+			if (currentSemVerParts) {
+				if (options.smartSet) {
+					if (currentSemVerParts.major === semVerParts.major && currentSemVerParts.minor === semVerParts.minor) {
+						semVerParts.patch = currentSemVerParts.patch;
+					} else {
+						semVerParts.patch = 0;
+					}
+				}
+			}
+		}
+		let semVersion = `${semVerParts.major}.${semVerParts.minor}.${semVerParts.patch}${semVerParts.postfix}`;
+
+		switch(options.mode) {
+			case 'caret':
+				return `${semVerParts.prefix}^${semVersion}`;
+				break;
+			case 'tilde':
+				return `${semVerParts.prefix}~${semVersion}`;
+				break;
+			case 'fixed': {
+				return `${semVerParts.prefix}${semVersion}`;
 			}
 		}
 	}
-	let semVersion = `${semVerParts.major}.${semVerParts.minor}.${semVerParts.patch}`;
 
-	switch(options.mode) {
-		case 'caret':
-			return `^${semVersion}`;
-			break;
-		case 'tilde':
-			return `~${semVersion}`;
-			break;
-		case 'fixed': {
-			return `${semVersion}`;
-		}
-	}
 	return version;
 }
 
 function getSemVerParts(version) {
-	let parts = version.split('.');
-	let major = parseInt(parts[0].match(/\d/)) || 0;
-	let minor = parseInt(parts[1].match(/\d/)) || 0;
-	let patch = parseInt(parts[2].match(/\d/)) || 0;
-	return {
-		major: major,
-		minor: minor,
-		patch: patch
+	let result = version.match(/([\w\/\-]*)#?.?(\d)\.(\d).(\d)(.*)/);
+	if (result) {
+		return {
+			prefix: result[1] ? result[1] + '#' : '',
+			major: parseInt(result[2]),
+			minor: parseInt(result[3]),
+			patch: parseInt(result[4]),
+			postfix: result[5]
+		};
 	}
+	return false;
 }
 
 if (bowerJson.dependencies) {
