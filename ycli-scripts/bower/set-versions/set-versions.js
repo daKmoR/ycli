@@ -96,7 +96,7 @@ function prepareShouldBeVersion(version, currentVersion) {
 }
 
 function getSemVerParts(version) {
-	let result = version.match(/([\w\/\-]*)#?.?(\d)\.(\d).(\d)(.*)/);
+	let result = version.match(/([\w\/\-]*)#?.?(\d+)\.(\d+).(\d+)(.*)/);
 	if (result) {
 		return {
 			prefix: result[1] ? result[1] + '#' : '',
