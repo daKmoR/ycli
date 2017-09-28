@@ -96,6 +96,7 @@ function _ycliRun {
 	length=$(($#))
 	params=$@
 	scriptParamsPath=${params// /\/};
+	_scriptParamsPath=${scriptParamsPath};
 	while [ ! -z ${scriptParamsPath} ]; do
 
 		for pluginPath in ${ycliPluginsPaths[@]}; do
@@ -118,7 +119,8 @@ function _ycliRun {
 		scriptParamsPath=${params// /\/}
 	done
 
-	echo "[ERROR] Command $scriptParamsPath not found";
+	echo "[ERROR] Command $_scriptParamsPath not found";
+	echo "[INFO] Maybe it's a plugin? try installing it with \"npm install -g ycli-$_scriptParamsPath\"";
 	return;
 }
 
