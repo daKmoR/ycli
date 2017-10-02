@@ -3,9 +3,6 @@ const path = require('path');
 const semver = require('semver');
 
 const filePath = process.cwd() + '/bower.json';
-const updateJsonFilePath = process.argv[2];
-let bowerJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-let updateJson = JSON.parse(fs.readFileSync(updateJsonFilePath, 'utf8'));
 
 options = {
 	mode: 'caret',
@@ -54,6 +51,10 @@ for (let key of params.keys()) {
 			break;
 	}
 }
+
+const updateJsonFilePath = process.argv[2];
+let bowerJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+let updateJson = JSON.parse(fs.readFileSync(updateJsonFilePath, 'utf8'));
 
 let didSomething = false;
 

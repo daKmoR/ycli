@@ -12,8 +12,8 @@ if [[ ! -f bower.json ]]; then
 	return;
 fi
 
-if [[ ! -f "$1" ]]; then
-	echo "[ERROR] The File $$1 does not exists";
+if [[ ! -f "$1" && "$1" != "--help"  && "$2" != "--help" ]]; then
+	echo "[ERROR] The File $1 does not exists";
 	echo "[INFO] You have to provide a file where the wanted version are set e.g. set-version my-version.json"
 	echo "Inside you have something like this";
 	echo "{";
