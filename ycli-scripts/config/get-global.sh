@@ -8,7 +8,7 @@ if [ "$1" == "ycliCommands" ]; then
 fi
 
 if [ -z "$1" ]; then
-	echo "[ERROR] The first parameter needs to be a json path. Example get-global ycli.name";
+	echo "[ERROR] The first parameter needs to be a json path. Example get-global wct.resultFilePath";
 	return 1;
 fi
 
