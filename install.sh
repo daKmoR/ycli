@@ -3,19 +3,20 @@
 if [ ! -f ~/.bashrc ]; then
 	if [ ! -f ~/.profile ]; then
 		echo "[ERROR] No ~/.profile found - is your bash correctly setup?";
-		exit;
+		echo "[INFO] Empty ~./profile created";
+		touch ~/.profile
 	fi
 
 	echo "[INFO] ~/.bashrc missing will be created and liked in ~/.profile";
 	touch ~/.bashrc
-	echo "
+	echo '
 # if running bash
-if [ -n \"$BASH_VERSION\" ]; then
+if [ -n "$BASH_VERSION" ]; then
 		# include .bashrc if it exists
-		if [ -f \"$HOME/.bashrc\" ]; then
-				. \"$HOME/.bashrc\"
+		if [ -f "$HOME/.bashrc" ]; then
+				source "$HOME/.bashrc"
 		fi
-fi" >> ~/.profile
+fi' >> ~/.profile
 fi
 
 installDir=$(pwd);
