@@ -26,7 +26,7 @@ for htmlFile in ${htmlFiles}; do
 done
 for found in ${allFound[@]}; do
 	version=$(ycli bower get-latest-version-for "$found");
-	tg util json set dependencies.${found} ${version} --file ${currentDir}/bower.json
+	ycli util json set dependencies.${found} ${version} --file ${currentDir}/bower.json
 done
 
 
@@ -42,8 +42,8 @@ for htmlFile in ${htmlFiles}; do
 done
 for found in ${allFound[@]}; do
 	version=$(ycli bower get-latest-version-for "$found");
-	echo $(tg util json get dependencies.${found} --file ${currentDir}/bower.json);
-	if [[ $(tg util json get dependencies.${found} --file ${currentDir}/bower.json) == "" ]]; then
-		tg util json set devDependencies.${found} ${version} --file ${currentDir}/bower.json
+	echo $(ycli util json get dependencies.${found} --file ${currentDir}/bower.json);
+	if [[ $(ycli util json get dependencies.${found} --file ${currentDir}/bower.json) == "" ]]; then
+		ycli util json set devDependencies.${found} ${version} --file ${currentDir}/bower.json
 	fi
 done

@@ -11,7 +11,7 @@ filesToUseOn=$(find . -iname "*.html" -type f -not -path "./bower_components*" -
 
 currentDir=$(pwd);
 
-dependencies=$(tg util json get-keys dependencies --file ${currentDir}/bower.json)
+dependencies=$(ycli util json get-keys dependencies --file ${currentDir}/bower.json)
 for dependency in $dependencies; do
 
 	found=0;
@@ -28,7 +28,7 @@ for dependency in $dependencies; do
 done
 
 
-devDependencies=$(tg util json get-keys devDependencies --file ${currentDir}/bower.json)
+devDependencies=$(ycli util json get-keys devDependencies --file ${currentDir}/bower.json)
 for dependency in $devDependencies; do
 
 	found=0;
