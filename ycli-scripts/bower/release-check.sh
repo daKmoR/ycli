@@ -15,7 +15,7 @@ fi
 currentDir=$(pwd);
 packageName=$(ycli util json get name --file ${currentDir}/bower.json);
 currentVersion=$(ycli util json get version --file ${currentDir}/bower.json);
-bowerVersion=$(bower info "$packageName" --verbose | grep -A1 'Available versions:' | tail -n 1 | sed -r 's/^.{4}//');
+bowerVersion=$(ycli bower get-latest-version-for "$packageName" --verbose);
 
 if [[ "$currentVersion" == "$bowerVersion" ]]; then
 	echo "✓ Bower Repository has the same latest version $currentVersion";
