@@ -3,7 +3,7 @@
 if [ ! -f ~/.bashrc ]; then
 	if [ ! -f ~/.profile ]; then
 		echo "[ERROR] No ~/.profile found - is your bash correctly setup?";
-		return 1;
+		exit;
 	fi
 
 	echo "[INFO] ~/.bashrc missing will be created and liked in ~/.profile";

@@ -133,7 +133,7 @@ ycli util json set version ${newVersion} --files ${jsonFiles[@]}
 for textFile in "${textFiles[@]}"; do
 	if [[ -f ${textFile} ]]; then
 		if grep -q ${currentVersion} ${textFile}; then
-			sed -i "s/${currentVersion}/${newVersion}/g" ${textFile}
+			sed "s/${currentVersion}/${newVersion}/g" ${textFile} > sed.tmp && mv sed.tmp ${textFile}
 			echo "[CHANGE] File $textFile has been touched :: String Replace \"$currentVersion\" to \"$newVersion\"";
 		fi
 	fi
